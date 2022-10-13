@@ -1,0 +1,105 @@
+#1) ile jest plików w katalogu /usr/include?  Ile katalogów?
+#2) znaleźć wszystkie pliki z rozszerzeniem .h w katalogu /usr/include (hint: jest ich 4956).
+#3) znaleźć wszystkie pliki w katalogu /usr/include nie zaczynające się na a (hint: jest ich 18924).
+#4) znaleźć (2) i (3) równocześnie (hint: jest ich 4763).
+#5) znaleźć pliki większe niż 100kB (hint: jest ich 195).
+#6) znaleźć pliki większe niż 100kB i mniejsze niż 200kB (hint: jest ich 123).
+#7) znaleźć wszystkie katalogi w katalogu /home/students do których mają Państwo prawa zapisu (oraz odpowiednio: odczytu i wykonania).
+#8) znaleźć wszystkie katalogi w katalogu /usr o uprawnieniach 775 (hint: jest ich 13240).
+#9) znaleźć wszystkie pliki zmodyfikowane w ciągu 60 minut (i odpowiednio, w przeciągu 2 dni)
+#10) znaleźć pliki w /usr/include/ modyfikowane po 4 marca, 12:34 (jest ich 1016)
+#11) wyszukać puste pliki w /etc/ (jest ich 23)
+#12) wykonaj na wszystkich plikach w katalogu domowym polecenie file
+#13) znajdź wszystkie pliki w /usr/include mające mniej niż 128 znaków i skopiuj je do katalogu ~/small_includes/
+#14) wyszukaj puste pliki i je skasuj
+#15) We wszystkich plikach z rozszerzeniem .h w katalogu /usr/include które możesz przeczytać zaczynających się na std znajdź linie zawierające FILE
+#16) j/w ale wypisz ich nazwy
+#17) jak w (15) ale skopiuj je do katalogu ~/std_files/
+#Zastosowanie praktyczne:
+#Wyobraz sobie, ze masz do oceny kolokwia z programowania.  A teraz obudz sie z tego koszmaru i przezyj go na wlasnej skorze:
+#sciagnij plik http://math.uni.lodz.pl/~rogalski/maker.sh
+
+        wget 'http://math.uni.lodz.pl/~rogalski/maker.sh'
+
+#Uruchom go:
+
+        chmod a+x maker.sh
+        ./maker.sh
+        
+#Spojrzyj na chaos stworzony w ~/wdp_tmp/:
+ 
+        tree ~/wdp_tmp/
+        
+#Pierwsza rzecz ktora zawsze trzeba zrobic, to wykasowac niepotrzebne pliki.
+#Skasuj wszystkie pliki wykonywalne, wszystkie pliki obiektowe (pliki .o), wszystkie pliki .cbp, wszystkie puste katalogi.
+#Nastepnie przygotuj liste plikow ktore jeszcze nie sa ocenione:  znajdz pozostałe pliki z rozszerzeniami .c, .cpp, .h albo .hpp gdzie nie ma w srodku ani #jednego wpisu MR.
+
+#1) 
+find /usr/include -type f | wc -l
+  #20162
+find /usr/include -type d | wc -l
+  #1526
+
+#2) 
+find /usr/include -type f -name "*.h" | wc -l
+  #4956
+
+#3) 
+find /usr/include -type f ! -name "a*" | wc -l
+  #18924
+
+#4)
+find /usr/include -type f -name "*.h" ! -name "a*" | wc -l
+  #4763
+
+#5) 
+find /usr/include -type f -size +100k | wc -l
+  #195
+
+#6)
+find /usr/include -type f -size +100k -size -200k | wc -l
+  #123
+
+#7)
+find /home/students 2>/dev/null -type d -writable -readable -executable | wc -l
+  #272
+
+#8)
+find /usr 2>/dev/null -perm 775 | wc -l
+  #13240
+
+#9)
+find /home/students -mmin -60 | wc -l
+  #644
+find /home/students -mtime -2 | wc -l
+  #693
+
+#10)
+find /usr/include -newermt "2021-03-04 12:34:00" | wc -l
+  #1016
+
+#11)
+find /etc 2>/dev/null -type f -empty | wc -l
+  #23
+
+#12)
+#file * $HOME
+
+#13)
+find /usr/include -type f -size -128c -exec cp -p '{}' ~/small_includes \;
+
+#14)
+find . -empty -type f -delete
+
+#15)
+find /usr/include -type f -name "std*.h" -readable -exec grep -n 'FILE' '{}' \;
+
+#16)
+find /usr/include -type f -name "std*.h" -readable -exec grep -l 'FILE' '{}' \;
+
+#17)
+find /usr/include -type f -name "std*.h" -readable -exec grep -l 'FILE' '{}' \; -exec cp '{}' ~/std_files/ \;
+
+find . -type f \( -executable -o -name "*.cbp" -o -name "*.o" -o -empty -type d \) -print -delete
+
+find . -type f \( -name "*.c" -o -name "*.cpp" -o -name "*.h" -o -name "*.hpp" \) -exec grep -L 'MR' '{}' \;
