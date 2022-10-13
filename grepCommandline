@@ -1,0 +1,45 @@
+wget 'http://math.uni.lodz.pl/~rogalski/en'
+
+
+#basic grep actions
+
+#1. zawierające 'z' 
+	cat en | grep 'z'
+#2. zaczynające się na 'z'
+	cat en | grep '^z'
+#3. kończące się na 'z'
+	cat en | grep 'z$'
+#4. zaczynające się na 'a'
+	cat en | grep '^a'
+#5. zaczynające się na 'a' i kończące na 'z'
+	cat en | grep '^a. *z$'
+#6. zawierające conajmniej 3 litery 'z'
+	cat en | grep -E '(z.*){3}'
+#7. zawierające dokładnie 3 litery 'h'
+	cat en | grep -E '(h.*){3}'  | grep -vE '(h.*){4}'
+#8. zaczynające się na 'you'
+	cat en | grep '^you'
+#9. zaczynające się na 'zoo'
+	cat en | grep '^zoo'
+#10. zaczynające się na 'zoo' a zaczyna się na 'you'
+	cat en | grep '^zoo | ^you'
+#11. zaczynające się na 'zoo' albo kończące się na 'you'
+	cat en | grep '^zoo | you$'
+#12. zaczynające się na a,b,c lub d i kończące się na x, y, z
+	cat en | grep -E '^([a-d]).*([x-z]$)'
+#13. zaczynające się na a,b,c lub d i nie kończące się na x, y, z
+	cat en | grep -E '^([a-d]).*([x-z])$'
+#14. mają dokładnie dwa znaki
+	cat en | grep -E '^.{2}$'
+#15. mają co najmniej 18 znaków 
+	cat en | grep -E '^.{18,}'
+#16. mają dokładnie dwa znaki lub 4 znaki
+	cat en | grep -E '^.{2}$|^.{4}$'
+#17. mają dokładnie 5 znaków i trzecia litera to z
+	cat en | grep -E '^.{2}z.{2}$'
+#18. zaczynają się na o, y albo k i kończące się tą samą literą
+	cat en | grep -E '(^[y|o|k]).*\1$'
+
+	
+
+	
